@@ -1,0 +1,1548 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Prashu ✦ J</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650;9..144,750&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- GSAP + Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root{
+      --bg0:#07050a;
+      --bg1:#140612;
+      --wine:#8b1b3a;
+      --rose:#ff5c8a;
+      --pink:#ff7fb0;
+      --ink:#f6eef4;
+      --muted:rgba(246,238,244,.72);
+      --glass:rgba(255,255,255,.06);
+      --glass2:rgba(255,255,255,.10);
+      --stroke:rgba(255,255,255,.14);
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius: 22px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--ink);
+      background: radial-gradient(1200px 800px at 20% 10%, rgba(139,27,58,.25), transparent 60%),
+                  radial-gradient(900px 700px at 80% 20%, rgba(255,92,138,.18), transparent 55%),
+                  linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+    }
+
+    /* Subtle grain */
+    body::before{
+      content:"";
+      position:fixed; inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
+      mix-blend-mode:overlay;
+      opacity:.30;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    /* Floating hearts layer */
+    #hearts{
+      position:fixed;
+      inset:0;
+      overflow:hidden;
+      pointer-events:none;
+      z-index:1;
+    }
+    .heart{
+      position:absolute;
+      bottom:-40px;
+      opacity:.14;
+      filter: blur(.2px);
+      will-change: transform, opacity;
+      animation: floatUp linear forwards;
+      user-select:none;
+    }
+    @keyframes floatUp{
+      0%{ transform: translate3d(0,0,0) rotate(0deg); opacity:0; }
+      10%{opacity:.15}
+      100%{ transform: translate3d(var(--dx), calc(-1 * var(--rise)), 0) rotate(var(--rot)); opacity:0; }
+    }
+
+    /* Layout */
+    .wrap{
+      position:relative;
+      z-index:2;
+      min-height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 56px 16px 90px;
+    }
+.stage{
+  position: relative;
+  width: min(1040px, 100%);
+  display: grid;
+  place-items: center;
+  overflow: visible;
+
+  /* THIS is the key: creates space around the card */
+  padding: 190px 160px;
+}
+
+@media (max-width: 820px){
+  .stage{ padding: 150px 22px; }
+}
+.stage .card{ position: relative; z-index: 2; }
+
+    .card{
+      width:min(940px, 100%);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      overflow:hidden;
+      position:relative;
+      will-change: transform, opacity;
+    }
+    .glow{
+      position:absolute;
+      inset:-80px;
+      background: radial-gradient(500px 280px at 15% 15%, rgba(255,92,138,.18), transparent 60%),
+                  radial-gradient(420px 260px at 85% 20%, rgba(139,27,58,.20), transparent 65%);
+      pointer-events:none;
+      z-index:0;
+    }
+    .inner{
+      position:relative;
+      z-index:1;
+      padding: 28px 26px 22px;
+    }
+
+    .topRow{
+      display:flex;
+      gap:18px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+
+    /* Hero */
+    .hero{
+      display:grid;
+      gap:12px;
+      padding: 10px 0 6px;
+      width: 100%;
+    }
+    .logoRow{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .logo{
+      width:64px;
+      height:64px;
+      flex:0 0 auto;
+      display:grid;
+      place-items:center;
+    }
+    .logo svg{
+      width:64px;
+      height:64px;
+      display:block;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,.55));
+    }
+
+    .heroTitle{
+      font-family: "Fraunces", serif;
+      font-weight: 700;
+      letter-spacing: .2px;
+      line-height:1.05;
+      font-size: clamp(26px, 3.2vw, 42px);
+      margin: 0;
+    }
+    .swapWrap{
+      display:inline-flex;
+      align-items:baseline;
+      gap:.45ch;
+      white-space:nowrap;
+    }
+    .staticLead{
+      opacity:.92;
+    }
+    .swapWord{
+      display:inline-block;
+      padding: 2px 10px 4px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255,92,138,.20), rgba(139,27,58,.16));
+      border: 1px solid rgba(255,255,255,.14);
+      text-shadow: 0 10px 26px rgba(0,0,0,.35);
+      position:relative;
+      overflow:hidden;
+    }
+    .swapWord::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,.22) 42%, transparent 60%);
+      transform: translateX(-120%);
+      opacity:.45;
+      pointer-events:none;
+    }
+
+    .subLine{
+      color: var(--muted);
+      font-size: 14px;
+      line-height:1.55;
+      margin: 0;
+    }
+
+    .btnRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 6px;
+    }
+
+    .btn{
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: var(--ink);
+      padding: 10px 14px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-weight:600;
+      letter-spacing:.2px;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
+      box-shadow: 0 10px 26px rgba(0,0,0,.28);
+      user-select:none;
+    }
+    .btn:hover{ transform: translateY(-2px); border-color: rgba(255,255,255,.26); background: rgba(255,255,255,.085); }
+    .btn:active{ transform: translateY(0px) scale(.99); }
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(255,92,138,.22), rgba(139,27,58,.18));
+      border-color: rgba(255,127,176,.28);
+    }
+    .btn.mini{
+      padding: 9px 12px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .btn.hidden{ display:none; }
+
+    /* Sections */
+    .section{
+      display:none;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,.10);
+    }
+    .section.active{ display:block; }
+    .sectionTitle{
+      font-size: 16px;
+      color: rgba(255,255,255,.92);
+      font-weight:700;
+      letter-spacing:.2px;
+      margin:0 0 6px;
+    }
+    .sectionLead{
+      margin:0 0 14px;
+      color: var(--muted);
+      line-height:1.55;
+    }
+
+    /* Options */
+    .options{
+      display:grid;
+      gap:10px;
+    }
+    .option{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.045);
+      border-radius: 16px;
+      padding: 12px 14px;
+      cursor:pointer;
+      transition: transform .16s ease, background .16s ease, border-color .16s ease;
+      position:relative;
+    }
+    .option:hover{
+      transform: translateY(-2px);
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,255,255,.22);
+    }
+    .option.selected{
+      border-color: rgba(255,127,176,.35);
+      background: linear-gradient(135deg, rgba(255,92,138,.14), rgba(139,27,58,.10));
+      box-shadow: 0 16px 40px rgba(0,0,0,.30);
+    }
+    .optText{
+      font-weight:600;
+      line-height:1.35;
+    }
+    .optNote{
+      margin-top: 8px;
+      font-size: 13px;
+      color: rgba(255,255,255,.80);
+      display:none;
+    }
+    .option.selected .optNote{ display:block; }
+
+    /* Toast */
+    .toast{
+      position:fixed;
+      left:50%;
+      top: 14%;
+      transform: translateX(-50%);
+      padding: 10px 14px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(10,6,12,.62);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 18px 50px rgba(0,0,0,.45);
+      color: rgba(255,255,255,.92);
+      font-weight:700;
+      letter-spacing:.2px;
+      opacity:0;
+      pointer-events:none;
+      z-index:50;
+      white-space:nowrap;
+    }
+
+    /* Polaroids around the main section (from /photos folder) */
+.polaroidLayer{
+  position:absolute;
+  inset: 0;
+  pointer-events:auto;   /* allow clicking polaroids */
+  z-index: 1;            /* under card by default */
+  overflow: visible;
+}
+.polaroidLayer.above{ z-index: 5; }
+
+#card{ position: relative; z-index: 2; }
+
+    .polaroid{
+  position:absolute;
+  pointer-events:auto;
+  cursor:pointer;
+  border-radius: 16px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      padding: 10px 10px 12px;
+      box-shadow: 0 14px 42px rgba(0,0,0,.34);
+      overflow:hidden;
+      transform: translate3d(0,0,0) rotate(var(--tilt));
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      opacity: .95;
+    }
+
+    .polaroid .frame{
+      border-radius: 12px;
+      overflow:hidden;
+      background: rgba(0,0,0,.25);
+      border:1px solid rgba(255,255,255,.08);
+      width:100%;
+      aspect-ratio: var(--ar);
+    }
+
+    .polaroid img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+      filter: contrast(1.03) saturate(1.02);
+    }
+
+    /* Nostalgic feel when celebrating */
+    body.nostalgia .polaroid img{
+      filter: contrast(1.02) saturate(0.92) sepia(0.22);
+    }
+
+    .polaroid.portrait{ width: 168px; }
+    .polaroid.landscape{ width: 210px; }
+
+    .cap{
+      margin-top: 10px;
+      font-family: "Fraunces", serif;
+      font-weight: 650;
+      letter-spacing:.2px;
+      font-size: 14px;
+      color: rgba(255,255,255,.92);
+      text-align:center;
+      opacity:.95;
+    }
+
+    /* Ensure main content sits above the polaroids */
+    .inner{ position:relative; z-index:2; }
+    .glow{ z-index:1; }
+
+    /* Recap list */
+    .recap{
+      display:grid;
+      gap:10px;
+      margin-top: 10px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(255,255,255,.03);
+    }
+    .recapItem{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      border-bottom:1px dashed rgba(255,255,255,.10);
+      padding-bottom:10px;
+    }
+    .recapItem:last-child{ border-bottom:none; padding-bottom:0; }
+    .k{ color: var(--muted); font-weight:600; }
+    .v{ font-weight:700; text-align:right; }
+
+    /* Final illla evasion */
+    .finalBtns{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 12px;
+      position:relative;
+      min-height: 56px;
+    }
+    #btnIlla{
+      position:relative;
+    }
+
+    /* Small responsive tweaks */
+    @media (max-width: 820px){
+      .topRow{flex-direction:column}
+      .side{width:100%}
+    }
+
+    /* hidden start states for animations */
+    .fadeStart{ opacity:0; transform: translateY(10px); }
+    /* Polaroid preview modal */
+.previewModal{
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.62);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 120;
+  padding: 18px;
+}
+.previewModal.open{ display:flex; }
+.previewModal .panel{
+  width: min(820px, 92vw);
+  max-height: 86vh;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 18px;
+  box-shadow: 0 24px 80px rgba(0,0,0,.55);
+  overflow: hidden;
+  position: relative;
+}
+.previewModal img{
+  width:100%;
+  height:auto;
+  max-height:86vh;
+  object-fit:contain;
+  display:block;
+  background: rgba(0,0,0,.25);
+}
+    .previewModal .closeBtn{
+  position:absolute;
+  top:10px;
+  right:10px;
+  border:1px solid rgba(255,255,255,.18);
+  background: rgba(10,6,12,.55);
+  color: rgba(255,255,255,.92);
+  border-radius:999px;
+  padding:8px 10px;
+  cursor:pointer;
+  font-weight:800;
+  line-height:1;
+}
+
+/* ===== Post-card overlay (DJ title + replay) shown before polaroids fade in ===== */
+.afterOverlay{
+  position:absolute;
+  inset:0;
+  z-index: 8;
+  display:none;
+  pointer-events:none;
+}
+.afterOverlay.open{ display:block; }
+
+.afterOverlay .centerTitle{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform: translate(-50%, -55%);
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  border:1px solid rgba(255,255,255,.16);
+  background: rgba(10,6,12,.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 22px 70px rgba(0,0,0,.55);
+}
+
+.afterOverlay .djWord{
+  font-family: "Fraunces", serif;
+  font-weight: 750;
+  letter-spacing: .6px;
+  font-size: clamp(34px, 5vw, 56px);
+  line-height: 1;
+  color: rgba(255,255,255,.92);
+}
+
+.afterOverlay .miniHeart svg{
+  width:52px;
+  height:52px;
+  display:block;
+  filter: drop-shadow(0 10px 22px rgba(0,0,0,.55));
+}
+
+.afterOverlay .replayCorner{
+  position:absolute;
+  right: 14px;
+  top: 14px;
+  pointer-events:auto;
+}
+
+.afterOverlay .replayCorner .btn{
+  background: rgba(255,255,255,.07);
+}
+  </style>
+</head>
+
+<body>
+  <div id="hearts" aria-hidden="true"></div>
+  <div class="toast" id="toast">Ok ippo start pannalam</div>
+  <div class="previewModal" id="previewModal" aria-hidden="true">
+  <div class="panel" role="dialog" aria-modal="true">
+    <button class="closeBtn" id="previewClose" type="button">✕</button>
+    <img id="previewImg" alt="Preview" />
+  </div>
+</div>
+
+  <div class="wrap">
+      <div class="stage" id="stage">
+    <div class="polaroidLayer" id="polaroidLayer" aria-hidden="true"></div>
+    <div class="afterOverlay" id="afterOverlay" aria-hidden="true">
+      <div class="replayCorner">
+        <button class="btn mini" id="btnReplayTop" type="button">Replay ↺</button>
+      </div>
+
+      <div class="centerTitle" id="afterTitle">
+        <div class="miniHeart" aria-hidden="true">
+          <!-- Heart outline (matches the theme) -->
+          <svg viewBox="0 0 80 80" role="img" aria-hidden="true">
+            <defs>
+              <linearGradient id="g2" x1="0" x2="1">
+                <stop offset="0" stop-color="#ff7fb0" stop-opacity="0.95"/>
+                <stop offset="1" stop-color="#8b1b3a" stop-opacity="0.85"/>
+              </linearGradient>
+              <filter id="soft2" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="1.2" result="b"/>
+                <feColorMatrix in="b" type="matrix"
+                  values="1 0 0 0 0
+                          0 1 0 0 0
+                          0 0 1 0 0
+                          0 0 0 0.65 0"/>
+                <feMerge>
+                  <feMergeNode/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+
+            <path d="M40 67
+                     C40 67, 12 49, 12 30
+                     C12 18, 22 12, 31 12
+                     C36 12, 39 15, 40 17
+                     C41 15, 44 12, 49 12
+                     C58 12, 68 18, 68 30
+                     C68 49, 40 67, 40 67Z"
+                  fill="rgba(255,255,255,.04)"
+                  stroke="url(#g2)" stroke-width="2.2"
+                  filter="url(#soft2)"/>
+          </svg>
+        </div>
+        <div class="djWord">DJ</div>
+      </div>
+    </div>
+    <div class="card" id="card">
+      <div class="glow"></div>
+
+      <div class="inner">
+        <div class="topRow">
+          <!-- Main content -->
+          <div style="flex: 1 1 520px; min-width: 290px;">
+            <div class="hero" id="hero">
+              <div class="logoRow">
+                <div class="logo" aria-label="DJ Heart Logo">
+                  <!-- Heart + DJ monogram (SVG) -->
+                  <svg viewBox="0 0 80 80" role="img" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="g" x1="0" x2="1">
+                        <stop offset="0" stop-color="#ff7fb0" stop-opacity="0.95"/>
+                        <stop offset="1" stop-color="#8b1b3a" stop-opacity="0.85"/>
+                      </linearGradient>
+                      <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="1.2" result="b"/>
+                        <feColorMatrix in="b" type="matrix"
+                          values="1 0 0 0 0
+                                  0 1 0 0 0
+                                  0 0 1 0 0
+                                  0 0 0 0.65 0"/>
+                        <feMerge>
+                          <feMergeNode/>
+                          <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                      </filter>
+                    </defs>
+
+                    <!-- Heart outline -->
+                    <path d="M40 67
+                             C40 67, 12 49, 12 30
+                             C12 18, 22 12, 31 12
+                             C36 12, 39 15, 40 17
+                             C41 15, 44 12, 49 12
+                             C58 12, 68 18, 68 30
+                             C68 49, 40 67, 40 67Z"
+                          fill="rgba(255,255,255,.06)"
+                          stroke="url(#g)" stroke-width="2.2"
+                          filter="url(#soft)"/>
+
+                    <!-- DJ monogram -->
+                    <g transform="translate(0,1)" fill="none" stroke="rgba(255,255,255,.90)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round">
+                      <!-- D (slightly wider, centered) -->
+                      <path d="M24.5 26.5 v27" />
+                      <path d="M24.5 26.5 h11.5 c7.8 0 12.8 6.2 12.8 13.5S43.8 53.5 36 53.5H24.5" />
+
+                      <!-- J (tucked in, balanced) -->
+                      <path d="M56.5 26.5 v18.8 c0 7-4.7 11.7-12 11.7 -5.8 0-9.4-3.1-10.4-7.4" />
+                    </g>
+                  </svg>
+                </div>
+
+                <div>
+                  <h1 class="heroTitle">
+                    <span class="swapWrap">
+                      <span class="staticLead">Ingaa irukku</span>
+                      <span class="swapWord" id="swapWord">Florida</span>
+                    </span>
+                  </h1>
+                  <p class="subLine">Prashu ✦ J — a tiny world, just for us.</p>
+
+                  <div class="btnRow">
+                    <button class="btn mini primary" id="btnKiss">Kiss Me 😘</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Intro Section -->
+            <div class="section" id="introSection">
+              <h3 class="sectionTitle">Before we start</h3>
+              <p class="sectionLead" style="white-space:pre-line">
+My Precious J ❤️
+
+Nee inga Pollachi… naan inga Florida.
+
+Distance irukku  but you still feel near.
+
+I made you something small, just for us.
+
+And at the end… I’m asking you one important thing.
+              </p>
+              <div class="btnRow">
+                <button class="btn mini primary" id="btnSeri">seri ok</button>
+              </div>
+            </div>
+
+            <!-- Q Sections container -->
+            <div class="section" id="quizSection">
+              <!-- injected by JS -->
+            </div>
+
+            <!-- Recap -->
+            <div class="section" id="recapSection">
+              <h3 class="sectionTitle">A small postcard</h3>
+              <p class="sectionLead">Just a tiny recap before the last question.</p>
+
+              <div class="recap" id="recapList"></div>
+
+              <div class="btnRow" style="margin-top:14px;">
+                <button class="btn mini primary" id="btnLastQ">Okay… last question</button>
+              </div>
+            </div>
+
+            <!-- Final -->
+            <div class="section" id="finalSection">
+              <h3 class="sectionTitle" id="finalBreath">ok deep breath…</h3>
+              <p class="sectionLead" style="margin-bottom:8px; font-weight:800; color: rgba(255,255,255,.92);">
+                One last question
+              </p>
+              <p class="sectionLead" style="margin-top:0; white-space:pre-line">
+My love,
+
+Every day with you feels like a promise already fulfilled. You are my peace in chaos, my smile on hard days, and my forever in a world that keeps changing.
+
+This Valentine’s Day isn’t just about flowers or dates  it’s about choosing each other again, just like we always do.
+
+So with all my heart, and all the love I carry for you…
+Will you be my Valentine? ❤️
+              </p>
+
+              <div class="finalBtns" id="finalBtns">
+                <button class="btn mini primary" id="btnAama">Aama 💗</button>
+                <button class="btn mini primary" id="btnYes">Yes 💗</button>
+                <button class="btn mini" id="btnIlla">Illa 🙄</button>
+              </div>
+
+              <div id="finalMsg" class="fadeStart" style="display:none; margin-top:14px;">
+                <p class="sectionLead" style="font-weight:800; color: rgba(255,255,255,.92); margin-bottom:6px;">
+                  Yay, it’s official 💗
+                </p>
+                <p class="sectionLead" style="white-space:pre-line; margin-top:0;">
+As if you had a choice 😌❤️
+Happy Valentine’s Day, my Pondatti!
+
+I won’t make a big speech because you already know this you’re my favorite person, my safest place, and the one I want to do life with.
+
+I love you more than I act like I do, more than I say out loud, and definitely more than you’ll ever realize. 😉
+                </p>
+                <div class="btnRow">
+                  <button class="btn mini primary" id="btnReplayEnd">Just For You</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/** ========= Config ========= **/
+const NICKNAMES = [
+  "Jannn","Jann Babiee girl","Sexyy Jann","Luvv","Hon","Darlingg","Cutiee",
+  "Jann Kutty","Jann Babe","Jann Bae","Jannu","Jananieee","DJ"
+];
+
+const QUESTIONS = [
+  {
+    id: "headline",
+    title: "Breaking News 🗞️",
+    lead: "Pick the headline that feels most like us.",
+    options: [
+      {
+        text: "Distance: huge. Attachment: getting worse (for me) 📈😌",
+        note: "Filed under: ‘symptoms getting serious’. Noted, Mr. Missing-You."
+      },
+      {
+        text: "Latency: your voice sometimes buffers. Effect: instant smile 😮‍💨💗",
+        note: "Even with buffering… you’re still my best signal."
+      },
+      {
+        text: "Florida has 🐊… Pollachi has 🥥… I have you. Balance restored.",
+        note: "Breaking: World restored to correct proportions. Coconut × Gator peace."
+      },
+      {
+        text: "Status update: I’m ‘fine’. Also: I miss you. Both are true. 🙂",
+        note: "Classic ‘I’m fine’ = lying politely. Approved."
+      },
+    ],
+    label: "Headline"
+  },
+  {
+    id: "usTime",
+    title: "Quick sync",
+    lead: "Our best ‘us time’ is…?",
+    options: [
+      { text: "Your night + my morning (soft calls) ☁️", note: "Soft calls = soft heart. Dangerous combo." },
+      { text: "Your evening + my afternoon (prime time) 💬", note: "Prime time unlocked. Main character hours." },
+      { text: "Random calls (you ping, I vanish from the world) 📞", note: "If you call, I disappear from Earth. That’s the rule." },
+      { text: "Planned calls (calendar invite but still romantic) 🗓️", note: "Organized romance? CEO of cute." },
+    ],
+    label: "Us time"
+  },
+  {
+    id: "place",
+    title: "Meet me… in our head",
+    lead: "Pick the place.",
+    options: [
+      { text: "Pollachi coconut road drive 🥥 (windows down, vibes up)", note: "Windows down, vibe up. You + breeze + me = film scene." },
+      { text: "Aliyar dam kayaking 🛶 (water + you laughing at me)", note: "I’ll act confident. You’ll laugh. Perfect." },
+      { text: "Clearwater beach sunset walk 🌅🌊 (Florida doing the most)", note: "Florida showing off. But you’ll still outshine it." },
+      { text: "Everglades trail walk 🐊🌿 (me acting brave)", note: "I’ll be brave for 2 minutes… then hold your hand for safety." },
+      { text: "Just us at home 🛋️ (talk + comfortable silence)", note: "Quiet + comfy + you. My favorite location." },
+    ],
+    label: "Place"
+  },
+  {
+    id: "montage",
+    title: "Kollywood montage mode",
+    lead: "If our story is a montage… which style is it?",
+    options: [
+      { text: "GVM energy: soft talk + rain appears for free 🌧️", note: "Soft talks + rain entry. Background score automatically Harris." },
+      { text: "Mani Ratnam energy: beautiful frames, serious feelings 🎞️", note: "Beautiful frames, heavy feelings. Eyes doing the dialogue." },
+      { text: "Shankar energy: grand entry + drums + slow-mo 😤🔥", note: "Grand entry + drums + slow-mo. Even our texts feel cinematic." },
+      { text: "KV Anand energy: stylish, smart, little mystery 🕶️🌍", note: "Us = classy thriller-romance. Smooth, sharp, addictive." },
+    ],
+    label: "Montage"
+  },
+  {
+    id: "soundtrack",
+    title: "Soundtrack selection",
+    lead: "Not a full playlist… just our vibe.",
+    options: [
+      { text: "Ilaiyaraaja 🎻 (your comfort zone)", note: "Obvious. It’s your fav. Correct answer, madam." },
+      { text: "Harris 🌃 (my butterflies zone)", note: "Butterflies + night-drive vibe. Very us-coded." },
+      { text: "ARR ✨ (our classy cinema zone)", note: "High quality emotions only. Classy cinema energy." },
+      { text: "Anirudh 😌 (my teasing zone)", note: "Teasing mode activated. One beat and I’ll annoy you lovingly." },
+    ],
+    label: "Soundtrack"
+  },
+  {
+    id: "food",
+    title: "Food treaty: Pollachi ↔ Florida",
+    lead: "Pick our combo. (No junk. I respect the rules.)",
+    options: [
+      { text: "Your milk smoothie 🥛 + my ‘I’ll also be healthy’ smoothie 😌", note: "Two smoothies, one love. We’re behaving… suspiciously." },
+      { text: "Elaneer + fruit 🥥🍉 + Florida oranges 🍊 (clean + simple)", note: "Clean + simple + refreshing. Just like your vibe." },
+      { text: "Chettinad fish fry 🐟 + beach picnic vibes 🧺 (perfect plan)", note: "This is a date plan disguised as food. Approved." },
+      { text: "Biryani 🤝 biryani (peace treaty, no debates)", note: "Peace treaty signed. No debates, only bites." },
+    ],
+    label: "Food treaty"
+  },
+  {
+    id: "distanceHits",
+    title: "Okay, real question",
+    lead: "When distance feels irritating… what helps most?",
+    options: [
+      { text: "Voice notes — I can replay you anytime 🎧", note: "Replay button for your voice = my weakness." },
+      { text: "Random photos — small life updates, no caption needed 📷", note: "Small updates = big happiness. Send more. (please.)" },
+      { text: "Movie night — same scene, different continents 🍿", note: "Same scene, different continents. Still holding hands mentally." },
+      { text: "Virtual 3 😈", note: "I knew it. Good choice 😌 Just tell me when." },
+    ],
+    label: "When distance hits"
+  },
+  {
+    id: "first30",
+    title: "When Florida finally meets Pollachi…",
+    lead: "First 30 minutes = ?",
+    options: [
+      { text: "Airport hug + silence (no rush)", note: "No rush. Just real." },
+      { text: "Quick kiss + ‘real ah?’ smile 😌💗", note: "Correct. Immediate confirmation kiss." },
+      { text: "Food first (because priorities)", note: "Priorities respected. Love runs on food." },
+      { text: "Hold hands somewhere quiet + talk like time owes us money", note: "Time owes us money. We’re collecting." },
+    ],
+    label: "First 30 mins"
+  },
+];
+
+const answers = {}; // filled as user selects
+
+/** ========= Helpers ========= **/
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => [...document.querySelectorAll(sel)];
+
+function showToast(text){
+  const t = $("#toast");
+  t.textContent = text;
+  gsap.killTweensOf(t);
+  gsap.fromTo(t, {opacity:0, y:-6}, {opacity:1, y:0, duration:.28, ease:"power2.out"});
+  gsap.to(t, {opacity:0, y:-6, duration:.32, ease:"power2.in", delay:1.25});
+}
+
+function reveal(el){
+  el.style.display = "";
+  gsap.fromTo(el, {opacity:0, y:10}, {opacity:1, y:0, duration:.55, ease:"power2.out"});
+}
+
+function activateSection(id){
+  const sec = $(id);
+  $$(".section").forEach(s => s.classList.remove("active"));
+  sec.classList.add("active");
+  // nice entrance
+  gsap.fromTo(sec, {opacity:0, y:10}, {opacity:1, y:0, duration:.55, ease:"power2.out"});
+}
+function openPreview(src){
+  const modal = document.getElementById("previewModal");
+  const img = document.getElementById("previewImg");
+  if(!modal || !img) return;
+  img.src = src;
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden", "false");
+}
+
+function closePreview(){
+  const modal = document.getElementById("previewModal");
+  const img = document.getElementById("previewImg");
+  if(!modal || !img) return;
+  modal.classList.remove("open");
+  modal.setAttribute("aria-hidden", "true");
+  img.src = "";
+}
+
+(function bindPreviewModal(){
+  const modal = document.getElementById("previewModal");
+  const closeBtn = document.getElementById("previewClose");
+  if(!modal || !closeBtn) return;
+
+  closeBtn.addEventListener("click", closePreview);
+  modal.addEventListener("click", (e) => { if(e.target === modal) closePreview(); });
+  window.addEventListener("keydown", (e) => { if(e.key === "Escape") closePreview(); });
+})();
+
+/** ========= Title swap animation ========= **/
+(function initSwap(){
+  const word = $("#swapWord");
+  const places = ["Florida","Pollachi"];
+  let idx = 0;
+
+  const tl = gsap.timeline({repeat:-1, repeatDelay:1.45});
+  tl.to(word, {
+    duration: .55,
+    filter: "blur(6px)",
+    y: -10,
+    opacity: 0,
+    ease: "power3.in"
+  })
+  .add(() => {
+    idx = (idx + 1) % places.length;
+    word.textContent = places[idx];
+  })
+  .set(word, {y: 10})
+  .to(word, {
+    duration: .70,
+    filter: "blur(0px)",
+    y: 0,
+    opacity: 1,
+    ease: "elastic.out(1, 0.6)"
+  })
+  .to(word, {
+    duration:.85,
+    onStart: () => {
+      // subtle shine sweep (non-cliche)
+      gsap.to(word, {"--shine": 1, duration:.01});
+      gsap.to(word, {duration:.75, onUpdate: () => {}});
+      // animate pseudo-element by toggling a class-like effect
+      word.style.setProperty("--_shine", "1");
+      word.style.setProperty("--_t", "0");
+      // do it with keyframes-ish: move after element via CSS? easiest: animate transform by adding a temp class? We'll do inline by toggling animation:
+      word.style.setProperty("animation", "none");
+      void word.offsetWidth;
+      word.style.setProperty("animation", "");
+      // manually animate ::after by adding a class? We'll just briefly set a data-attr and CSS handles it:
+      word.dataset.shine = "1";
+      setTimeout(() => delete word.dataset.shine, 700);
+    }
+  }, "<");
+})();
+
+// pseudo shine via attribute
+const shineStyle = document.createElement("style");
+shineStyle.textContent = `
+  #swapWord[data-shine="1"]::after{
+    transform: translateX(130%);
+    transition: transform .7s ease;
+  }
+  #swapWord::after{
+    transition: transform .0s linear;
+  }
+`;
+document.head.appendChild(shineStyle);
+
+/** ========= Hearts background ========= **/
+(function hearts(){
+  const layer = $("#hearts");
+  const emojis = ["💗","💖","💕","💘","💝"];
+  const rand = (a,b)=> a + Math.random()*(b-a);
+
+  function spawn(){
+    const s = document.createElement("span");
+    s.className = "heart";
+    s.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    const size = rand(14, 34);
+    const x = rand(0, 100);
+    const rise = rand(680, 1200);
+    const dx = rand(-90, 90);
+    const rot = rand(-30, 30) + "deg";
+    const dur = rand(7.5, 14);
+
+    s.style.left = x + "vw";
+    s.style.fontSize = size + "px";
+    s.style.setProperty("--rise", rise + "px");
+    s.style.setProperty("--dx", dx + "px");
+    s.style.setProperty("--rot", rot);
+    s.style.animationDuration = dur + "s";
+    s.style.opacity = String(rand(0.08, 0.18));
+
+    layer.appendChild(s);
+    setTimeout(()=> s.remove(), dur*1000 + 500);
+  }
+
+  // density
+  setInterval(spawn, 360);
+  for(let i=0;i<14;i++) setTimeout(spawn, i*180);
+})();
+
+/** ========= Kiss confetti (💋 particles) ========= **/
+function kissBlast(){
+  // canvas-confetti text shape (supported in newer versions)
+  let kissShape = null;
+  try{
+    kissShape = confetti.shapeFromText({ text: "💋", scalar: 1.15 });
+  }catch(e){
+    kissShape = null;
+  }
+
+  const originY = 0.72;
+  const common = {
+    particleCount: 26,
+    spread: 64,
+    startVelocity: 44,
+    gravity: 0.95,
+    ticks: 220,
+    origin: { x: 0.5, y: originY },
+    scalar: 1.15,
+  };
+
+  if(kissShape){
+    confetti({...common, shapes: [kissShape]});
+    setTimeout(()=> confetti({...common, origin:{x:0.38, y:originY}, particleCount:18, shapes:[kissShape], spread:70}), 120);
+    setTimeout(()=> confetti({...common, origin:{x:0.62, y:originY}, particleCount:18, shapes:[kissShape], spread:70}), 240);
+  }else{
+    // fallback: classy burst
+    confetti({...common, particleCount: 80, spread: 72});
+  }
+}
+
+/** ========= Polaroids from /photos folder (no uploader) ========= **/
+// Put your photos inside a folder named `photos` next to this HTML file.
+// Then list the filenames here.
+const PHOTO_FILES = [
+  // Example:
+   "photos/1.jpg",
+  "photos/2.jpg",
+  "photos/3.jpg",
+  "photos/4.jpg",
+  "photos/5.jpg",
+  "photos/6.jpg",
+  "photos/7.jpg", 
+  "photos/8.jpg", 
+  "photos/9.jpg", 
+  "photos/10.jpg", 
+  "photos/11.jpg", 
+  "photos/12.jpg", 
+  "photos/13.jpg", 
+  "photos/14.jpg"  
+];
+
+let polaroidsLoaded = false;
+
+function clearPolaroids(){
+  const layer = $("#polaroidLayer");
+  if(layer) layer.innerHTML = "";
+  polaroidsLoaded = false;
+}
+
+function loadPolaroids(){
+  const layer = document.getElementById("polaroidLayer");
+  if(!layer) return Promise.resolve([]);
+
+  if(polaroidsLoaded) return Promise.resolve(Array.from(layer.children));
+  if(!PHOTO_FILES.length) return Promise.resolve([]);
+
+  polaroidsLoaded = true;
+  let nickIdx = 0;
+
+  // Build + append each polaroid only after its image is loaded so sizes are correct.
+  const tasks = PHOTO_FILES.map((src) => new Promise((resolve) => {
+    const img = new Image();
+    img.src = src;
+
+    const done = () => resolve(null);
+
+    img.onload = () => {
+      const wrap = document.createElement("div");
+      wrap.className = "polaroid";
+
+      const tilt = (Math.random()*10 - 5);
+      wrap.style.setProperty("--tilt", `${tilt.toFixed(2)}deg`);
+
+      const arNum = (img.naturalWidth || 1) / (img.naturalHeight || 1);
+      const isLandscape = arNum >= 1.05;
+      wrap.classList.add(isLandscape ? "landscape" : "portrait");
+      wrap.style.setProperty("--ar", isLandscape ? "4/3" : "3/4");
+
+      const frame = document.createElement("div");
+      frame.className = "frame";
+
+      const pic = document.createElement("img");
+      pic.src = src;
+      pic.alt = "J photo";
+      frame.appendChild(pic);
+
+      const cap = document.createElement("div");
+      cap.className = "cap";
+      cap.textContent = NICKNAMES[nickIdx % NICKNAMES.length];
+      nickIdx++;
+
+      wrap.appendChild(frame);
+      wrap.appendChild(cap);
+
+      // click to preview
+      wrap.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openPreview(src);
+      });
+
+      wrap.style.position = "absolute";
+      layer.appendChild(wrap);
+
+      resolve(wrap);
+    };
+
+    img.onerror = done;
+  }));
+
+  return Promise.all(tasks).then(() => Array.from(layer.children));
+}
+
+/** ========= Quiz renderer ========= **/
+function renderQuestion(i){
+  const q = QUESTIONS[i];
+  const container = $("#quizSection");
+
+  container.innerHTML = `
+    <h3 class="sectionTitle">${q.title}</h3>
+    <p class="sectionLead">${q.lead}</p>
+    <div class="options" id="options"></div>
+    <div class="btnRow" style="margin-top:14px;">
+      <button class="btn mini primary hidden" id="btnNext">Next →</button>
+    </div>
+  `;
+
+  const optionsEl = $("#options");
+  q.options.forEach((opt, idx) => {
+    const div = document.createElement("div");
+    div.className = "option";
+    div.innerHTML = `
+      <div class="optText">${opt.text}</div>
+      <div class="optNote">${opt.note}</div>
+    `;
+    div.addEventListener("click", () => {
+      // select style
+      $$(".option").forEach(o => o.classList.remove("selected"));
+      div.classList.add("selected");
+
+      answers[q.id] = opt.text;
+
+      // show next
+      const next = $("#btnNext");
+      next.classList.remove("hidden");
+      gsap.fromTo(next, {opacity:0, y:8}, {opacity:1, y:0, duration:.35, ease:"power2.out"});
+    });
+    optionsEl.appendChild(div);
+  });
+
+  const nextBtn = $("#btnNext");
+  nextBtn.addEventListener("click", () => {
+    if(i < QUESTIONS.length - 1){
+      gsap.to(container, {opacity:0, y:8, duration:.28, ease:"power2.in", onComplete: () => {
+        renderQuestion(i+1);
+        gsap.fromTo(container, {opacity:0, y:10}, {opacity:1, y:0, duration:.45, ease:"power2.out"});
+      }});
+    }else{
+      // go to recap
+      buildRecap();
+      activateSection("#recapSection");
+    }
+  });
+
+  gsap.fromTo(container, {opacity:0, y:10}, {opacity:1, y:0, duration:.45, ease:"power2.out"});
+}
+
+function buildRecap(){
+  const recap = $("#recapList");
+  recap.innerHTML = "";
+
+  QUESTIONS.forEach(q => {
+    const item = document.createElement("div");
+    item.className = "recapItem";
+    const val = answers[q.id] || "—";
+    // shorter display: keep the fun part, not label
+    item.innerHTML = `
+      <div class="k">${q.label}</div>
+      <div class="v">${escapeHtml(val)}</div>
+    `;
+    recap.appendChild(item);
+  });
+
+  gsap.fromTo(recap, {opacity:0, y:10}, {opacity:1, y:0, duration:.5, ease:"power2.out"});
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
+}
+
+/** ========= Flow ========= **/
+const btnKiss = $("#btnKiss");
+const introSection = $("#introSection");
+const quizSection = $("#quizSection");
+const recapSection = $("#recapSection");
+const finalSection = $("#finalSection");
+const btnSeri = $("#btnSeri");
+const btnLastQ = $("#btnLastQ");
+const btnReplayEnd = $("#btnReplayEnd");
+
+let introRevealedOnce = false;
+
+btnKiss.addEventListener("click", () => {
+  // Always: confetti + cute toast
+  kissBlast();
+  showToast("Heavy Kiss. Babe 😘");
+
+  // Only once: reveal the intro content after a short delay
+  if(!introRevealedOnce){
+    introRevealedOnce = true;
+    setTimeout(() => {
+      introSection.classList.add("active");
+      gsap.fromTo(introSection, {opacity:0, y:10}, {opacity:1, y:0, duration:.55, ease:"power2.out"});
+    }, 650);
+  }
+});
+
+btnSeri.addEventListener("click", () => {
+  showToast("Ok ippo start pannalam");
+  // transition into quiz
+  gsap.to(introSection, {opacity:0, y:8, duration:.28, ease:"power2.in", onComplete: () => {
+    introSection.classList.remove("active");
+    quizSection.classList.add("active");
+    renderQuestion(0);
+    gsap.fromTo(quizSection, {opacity:0, y:10}, {opacity:1, y:0, duration:.55, ease:"power2.out", delay:.15});
+  }});
+});
+
+btnLastQ.addEventListener("click", () => {
+  showToast("Ok… last question 🫶");
+  gsap.to(recapSection, {opacity:0, y:8, duration:.28, ease:"power2.in", onComplete: () => {
+    activateSection("#finalSection");
+    // breathing animation
+    const breath = $("#finalBreath");
+    gsap.fromTo(breath, {opacity:0, y:8}, {opacity:1, y:0, duration:.45, ease:"power2.out"});
+  }});
+});
+
+/** ========= Final buttons ========= **/
+function yesFlow(){
+  document.body.classList.add("nostalgia");
+  // confetti hearts-ish
+  confetti({
+    particleCount: 110,
+    spread: 78,
+    startVelocity: 46,
+    gravity: 1.05,
+    ticks: 260,
+    origin: {x:0.5, y:0.62},
+    scalar: 1.05,
+  });
+
+  const msg = $("#finalMsg");
+  msg.style.display = "";
+  gsap.fromTo(msg, {opacity:0, y:10}, {opacity:1, y:0, duration:.55, ease:"power2.out"});
+  $("#btnAama").disabled = true;
+  $("#btnYes").disabled = true;
+}
+
+$("#btnAama").addEventListener("click", yesFlow);
+$("#btnYes").addEventListener("click", yesFlow);
+
+// Illa runs away
+(function illaEvasion(){
+  const btn = $("#btnIlla");
+  const boundsEl = $("#finalBtns");
+
+  function moveAway(){
+    const b = boundsEl.getBoundingClientRect();
+    const bb = btn.getBoundingClientRect();
+
+    // keep inside bounds
+    const pad = 10;
+    const maxX = Math.max(pad, b.width - bb.width - pad);
+    const maxY = Math.max(pad, b.height - bb.height - pad);
+
+    const x = pad + Math.random() * maxX;
+    const y = pad + Math.random() * maxY;
+
+    btn.style.position = "absolute";
+    btn.style.left = x + "px";
+    btn.style.top = y + "px";
+
+    gsap.fromTo(btn, {scale:1}, {scale:1.03, duration:.12, yoyo:true, repeat:1, ease:"power2.out"});
+  }
+
+  btn.addEventListener("mouseenter", moveAway);
+  btn.addEventListener("mousemove", (e) => {
+    // if cursor gets close, move
+    const r = btn.getBoundingClientRect();
+    const dx = (r.left + r.width/2) - e.clientX;
+    const dy = (r.top + r.height/2) - e.clientY;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if(dist < 70) moveAway();
+  });
+
+  // touch devices
+  btn.addEventListener("touchstart", (e) => { e.preventDefault(); moveAway(); }, {passive:false});
+})();
+
+/** ========= Replay ========= **/
+function resetAll(){
+  // reset answers
+  for(const k of Object.keys(answers)) delete answers[k];
+
+  document.body.classList.remove("nostalgia");
+  // restore card if it was hidden
+  const card = document.getElementById("card");
+  if(card){
+    card.style.display = "";
+    gsap.set(card, {opacity: 1, y: 0});
+  }
+
+  // hide the after-overlay
+  const after = document.getElementById("afterOverlay");
+  if(after){
+    after.classList.remove("open");
+    after.setAttribute("aria-hidden", "true");
+    gsap.set(after, {opacity: 0});
+  }
+
+  // clear polaroids so we truly restart
+  clearPolaroids();
+
+  const layer = $("#polaroidLayer");
+  if(layer) layer.classList.remove("above");
+
+  // sections
+  $$(".section").forEach(s => s.classList.remove("active"));
+  $("#finalMsg").style.display = "none";
+  $("#finalMsg").classList.add("fadeStart");
+  $("#btnAama").disabled = false;
+  $("#btnYes").disabled = false;
+
+  // reset illla position
+  const illa = $("#btnIlla");
+  illa.style.position = "relative";
+  illa.style.left = "auto";
+  illa.style.top = "auto";
+
+  // hide intro + quiz + recap + final
+  introSection.classList.remove("active");
+  quizSection.classList.remove("active");
+  recapSection.classList.remove("active");
+  finalSection.classList.remove("active");
+
+  // reset intro reveal flag
+  introRevealedOnce = false;
+
+  // scroll to top of card
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+btnReplayEnd.addEventListener("click", () => {
+  const card = document.getElementById("card");
+  const layer = document.getElementById("polaroidLayer");
+  const stage = document.getElementById("stage");
+  if(!card || !layer || !stage) return;
+
+  // bring polaroids above AFTER card is gone
+  layer.classList.add("above");
+
+  // capture geometry BEFORE fade
+  const stageRect = stage.getBoundingClientRect();
+  // const cardRectAbs = card.getBoundingClientRect();
+  // const cardRect = {
+  //   left: cardRectAbs.left - stageRect.left,
+  //   top: cardRectAbs.top - stageRect.top,
+  //   right: cardRectAbs.right - stageRect.left,
+  //   bottom: cardRectAbs.bottom - stageRect.top
+  // };
+
+  // clear photos now (but don't show anything yet)
+  clearPolaroids();
+
+  // fade the card completely
+  gsap.to(card, {
+    opacity: 0,
+    y: -14,
+    duration: 0.75,
+    ease: "power2.inOut",
+    onComplete: () => {
+      // IMPORTANT: actually remove the card visually
+      card.style.display = "none";
+
+      // Show DJ title overlay before polaroids fade in
+      const after = document.getElementById("afterOverlay");
+      if(after){
+        after.classList.add("open");
+        after.setAttribute("aria-hidden", "false");
+        gsap.fromTo(after, {opacity: 0}, {opacity: 1, duration: 0.45, ease: "power2.out"});
+      }
+
+      // NOW create polaroids (wait until all images are appended), but after a short beat
+      setTimeout(() => {
+        loadPolaroids().then((kids) => {
+          // Re-measure AFTER card is removed
+          const stageRect2 = stage.getBoundingClientRect();
+          // No forbidden card zone: scatter freely!
+          scatterPolaroids(kids, stageRect2, null);
+          animatePolaroidsIn(kids);
+          showToast("Just for you 💗");
+        });
+
+        // fade only the center title, keep replay button visible
+        const title = document.getElementById("afterTitle");
+        if(title){
+          gsap.to(title, {opacity: 0, duration: 0.7, ease: "power2.inOut", delay: 0.25});
+        }
+      }, 900);
+    }
+  });
+});
+
+// Top-right replay (available during the DJ title / polaroid moment)
+(function bindReplayTop(){
+  const topBtn = document.getElementById("btnReplayTop");
+  if(!topBtn) return;
+  topBtn.addEventListener("click", () => {
+    resetAll();
+    showToast("Ok… ippo start pannalam ✨");
+  });
+})();
+
+function animatePolaroidsIn(nodes){
+  nodes.forEach((wrap, i) => {
+    const tilt = wrap.style.getPropertyValue("--tilt") || "0deg";
+    gsap.set(wrap, { opacity:0, y:240, rotation: tilt, scale:0.98 });
+    gsap.to(wrap, {
+      opacity: 0.95,
+      y: 0,
+      scale: 1,
+      duration: 2.2,
+      ease: "power1.out",
+      delay: 0.14 * i
+    });
+  });
+}
+
+function scatterPolaroids(nodes, stageRect, cardRect){
+  const padding = 28;
+  const placed = [];
+
+  const stageW = stageRect.width;
+  const stageH = stageRect.height;
+
+  // If cardRect is null → free scatter across entire stage
+  const regions = cardRect ? (() => {
+    const safe = 90;
+    const forbidden = {
+      left: cardRect.left - safe,
+      top: cardRect.top - safe,
+      right: cardRect.right + safe,
+      bottom: cardRect.bottom + safe
+    };
+
+    return [
+      { x1: padding, y1: padding, x2: forbidden.left, y2: stageH - padding },
+      { x1: forbidden.right, y1: padding, x2: stageW - padding, y2: stageH - padding },
+      { x1: padding, y1: padding, x2: stageW - padding, y2: forbidden.top },
+      { x1: padding, y1: forbidden.bottom, x2: stageW - padding, y2: stageH - padding }
+    ].filter(r => r.x2 - r.x1 > 160 && r.y2 - r.y1 > 160);
+  })() : [
+    { x1: padding, y1: padding, x2: stageW - padding, y2: stageH - padding }
+  ];
+
+  function overlap(a, b){
+    return !(a.right <= b.left || a.left >= b.right || a.bottom <= b.top || a.top >= b.bottom);
+  }
+
+  nodes.forEach((node, i) => {
+    const w = node.offsetWidth;
+    const h = node.offsetHeight;
+    const isLandscape = node.classList.contains("landscape");
+    const inflate = isLandscape ? 1.25 : 1.15;
+    const wEff = w * inflate;
+    const hEff = h * inflate;
+
+    let chosen = null;
+
+    for(let attempt = 0; attempt < 500; attempt++){
+      const rgn = regions[Math.floor(Math.random() * regions.length)];
+      if(!rgn) continue;
+
+      const x = rgn.x1 + Math.random() * (rgn.x2 - rgn.x1 - w);
+      const y = rgn.y1 + Math.random() * (rgn.y2 - rgn.y1 - h);
+
+      const box = { left:x, top:y, right:x+wEff, bottom:y+hEff };
+
+      let ok = true;
+      for(const p of placed){
+        if(overlap(box, p)){ ok = false; break; }
+      }
+      if(!ok) continue;
+
+      chosen = box;
+      break;
+    }
+
+    // GUARANTEED non-overlapping fallback (grid-like)
+    if(!chosen){
+      const col = i % 3;
+      const row = Math.floor(i / 3);
+      const gapX = 260;
+      const gapY = 300;
+
+      const x = padding + col * gapX;
+      const y = padding + row * gapY;
+
+      chosen = { left:x, top:y, right:x+wEff, bottom:y+hEff };
+    }
+
+    node.style.left = Math.round(chosen.left) + "px";
+    node.style.top  = Math.round(chosen.top) + "px";
+
+    placed.push({
+      left: chosen.left - 36,
+      top: chosen.top - 36,
+      right: chosen.right + 36,
+      bottom: chosen.bottom + 36
+    });
+  });
+}
+</script>
+
+</body>
+</html>
