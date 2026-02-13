@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="photos/dj-logo.png">
+<link rel="apple-touch-icon" href="photos/dj-logo.png">
+
   <title>Prashu ✦ J</title>
 
   <!-- Fonts -->
@@ -143,18 +146,40 @@
       padding: 10px 0 6px;
       width: 100%;
     }
-    .logoRow{
-      display:flex;
-      align-items:center;
-      gap:14px;
-    }
-    .logo{
-      width:64px;
-      height:64px;
-      flex:0 0 auto;
-      display:grid;
-      place-items:center;
-    }
+
+.logo{
+  width:64px;
+  height:64px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.12);
+  overflow: hidden;          /* IMPORTANT: crops the padded image */
+  display:grid;
+  place-items:center;
+}
+.logoRow{
+  display:flex;
+  align-items:center;  /* keep both perfectly centered */
+  gap:14px;
+}
+
+.logoImg{
+  width: 120%;               /* zoom in to kill transparent padding */
+  height: 120%;
+  object-fit: contain;
+  display:block;
+  transform: translateY(0);  /* tweak if needed */
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,.55));
+}
+
+.logo{
+  width:64px;
+  height:64px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.12);
+}
+
     .logo svg{
       width:64px;
       height:64px;
@@ -488,18 +513,19 @@
   position:absolute;
   left:50%;
   top:50%;
-  transform: translate(-50%, -55%);
+  transform: translate(-50%, -50%);
   display:flex;
   align-items:center;
-  gap:14px;
-  padding: 14px 18px;
-  border-radius: 18px;
+  justify-content:center;
+  padding: 18px;
+  border-radius: 22px;
   border:1px solid rgba(255,255,255,.16);
   background: rgba(10,6,12,.45);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 22px 70px rgba(0,0,0,.55);
 }
+
 
 .afterOverlay .djWord{
   font-family: "Fraunces", serif;
@@ -516,6 +542,26 @@
   display:block;
   filter: drop-shadow(0 10px 22px rgba(0,0,0,.55));
 }
+.afterOverlay .miniHeart{
+  width:72px;
+  height:72px;
+}
+
+.afterOverlay .miniHeart .afterLogo{
+  width:130%;
+  height:130%;
+  object-fit:contain;
+}
+
+
+.afterOverlay .miniHeart .afterLogo{
+  width: 120%;
+  height: 120%;
+  object-fit: contain;
+  display:block;
+  filter: drop-shadow(0 10px 22px rgba(0,0,0,.55));
+}
+
 
 .afterOverlay .replayCorner{
   position:absolute;
@@ -523,6 +569,7 @@
   top: 14px;
   pointer-events:auto;
 }
+
 
 .afterOverlay .replayCorner .btn{
   background: rgba(255,255,255,.07);
@@ -550,40 +597,9 @@
 
       <div class="centerTitle" id="afterTitle">
         <div class="miniHeart" aria-hidden="true">
-          <!-- Heart outline (matches the theme) -->
-          <svg viewBox="0 0 80 80" role="img" aria-hidden="true">
-            <defs>
-              <linearGradient id="g2" x1="0" x2="1">
-                <stop offset="0" stop-color="#ff7fb0" stop-opacity="0.95"/>
-                <stop offset="1" stop-color="#8b1b3a" stop-opacity="0.85"/>
-              </linearGradient>
-              <filter id="soft2" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="1.2" result="b"/>
-                <feColorMatrix in="b" type="matrix"
-                  values="1 0 0 0 0
-                          0 1 0 0 0
-                          0 0 1 0 0
-                          0 0 0 0.65 0"/>
-                <feMerge>
-                  <feMergeNode/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
-            </defs>
+  <img src="photos/dj-logo.png" alt="" class="afterLogo">
+</div>
 
-            <path d="M40 67
-                     C40 67, 12 49, 12 30
-                     C12 18, 22 12, 31 12
-                     C36 12, 39 15, 40 17
-                     C41 15, 44 12, 49 12
-                     C58 12, 68 18, 68 30
-                     C68 49, 40 67, 40 67Z"
-                  fill="rgba(255,255,255,.04)"
-                  stroke="url(#g2)" stroke-width="2.2"
-                  filter="url(#soft2)"/>
-          </svg>
-        </div>
-        <div class="djWord">DJ</div>
       </div>
     </div>
     <div class="card" id="card">
@@ -594,69 +610,28 @@
           <!-- Main content -->
           <div style="flex: 1 1 520px; min-width: 290px;">
             <div class="hero" id="hero">
-              <div class="logoRow">
-                <div class="logo" aria-label="DJ Heart Logo">
-                  <!-- Heart + DJ monogram (SVG) -->
-                  <svg viewBox="0 0 80 80" role="img" aria-hidden="true">
-                    <defs>
-                      <linearGradient id="g" x1="0" x2="1">
-                        <stop offset="0" stop-color="#ff7fb0" stop-opacity="0.95"/>
-                        <stop offset="1" stop-color="#8b1b3a" stop-opacity="0.85"/>
-                      </linearGradient>
-                      <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
-                        <feGaussianBlur stdDeviation="1.2" result="b"/>
-                        <feColorMatrix in="b" type="matrix"
-                          values="1 0 0 0 0
-                                  0 1 0 0 0
-                                  0 0 1 0 0
-                                  0 0 0 0.65 0"/>
-                        <feMerge>
-                          <feMergeNode/>
-                          <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                      </filter>
-                    </defs>
+  <div class="logoRow">
+    <div class="logo" aria-label="DJ Logo">
+      <img src="photos/dj-logo.png" alt="DJ Logo" class="logoImg">
+    </div>
 
-                    <!-- Heart outline -->
-                    <path d="M40 67
-                             C40 67, 12 49, 12 30
-                             C12 18, 22 12, 31 12
-                             C36 12, 39 15, 40 17
-                             C41 15, 44 12, 49 12
-                             C58 12, 68 18, 68 30
-                             C68 49, 40 67, 40 67Z"
-                          fill="rgba(255,255,255,.06)"
-                          stroke="url(#g)" stroke-width="2.2"
-                          filter="url(#soft)"/>
+    <div>
+      <h1 class="heroTitle">
+        <span class="swapWrap">
+          <span class="staticLead">Ingaa irukku</span>
+          <span class="swapWord" id="swapWord">Florida</span>
+        </span>
+      </h1>
 
-                    <!-- DJ monogram -->
-                    <g transform="translate(0,1)" fill="none" stroke="rgba(255,255,255,.90)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round">
-                      <!-- D (slightly wider, centered) -->
-                      <path d="M24.5 26.5 v27" />
-                      <path d="M24.5 26.5 h11.5 c7.8 0 12.8 6.2 12.8 13.5S43.8 53.5 36 53.5H24.5" />
+      <p class="subLine">Prashu ✦ J — a tiny world, just for us.</p>
 
-                      <!-- J (tucked in, balanced) -->
-                      <path d="M56.5 26.5 v18.8 c0 7-4.7 11.7-12 11.7 -5.8 0-9.4-3.1-10.4-7.4" />
-                    </g>
-                  </svg>
-                </div>
+      <div class="btnRow">
+        <button class="btn mini primary" id="btnKiss">Kiss Me 😘</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-                <div>
-                  <h1 class="heroTitle">
-                    <span class="swapWrap">
-                      <span class="staticLead">Ingaa irukku</span>
-                      <span class="swapWord" id="swapWord">Florida</span>
-                    </span>
-                  </h1>
-                  <p class="subLine">Prashu ✦ J — a tiny world, just for us.</p>
-
-                  <div class="btnRow">
-                    <button class="btn mini primary" id="btnKiss">Kiss Me 😘</button>
-                  </div>
-                </div>
-              </div>
-
-            </div>
 
             <!-- Intro Section -->
             <div class="section" id="introSection">
@@ -1056,7 +1031,16 @@ const PHOTO_FILES = [
   "photos/11.jpg", 
   "photos/12.jpg", 
   "photos/13.jpg", 
-  "photos/14.jpg"  
+  "photos/14.jpg",
+  "photos/15.jpg",
+  "photos/16.jpg",
+  "photos/17.jpg",
+  "photos/18.jpg",
+  "photos/19.jpg",
+  "photos/20.jpg",
+  "photos/21.jpg",
+  "photos/22.jpg",
+
 ];
 
 let polaroidsLoaded = false;
@@ -1542,6 +1526,54 @@ function scatterPolaroids(nodes, stageRect, cardRect){
     });
   });
 }
+/** ========= Magic Cursor Glitter Trail ========= **/
+
+(function magicCursor(){
+  const colors = ["#ff7fb0", "#ff5c8a", "#ffffff"];
+  const rand = (a,b)=> a + Math.random()*(b-a);
+
+  function sparkle(x,y){
+    const s = document.createElement("span");
+    s.style.position = "fixed";
+    s.style.left = x + "px";
+    s.style.top = y + "px";
+s.style.width = "auto";
+s.style.height = "auto";
+s.style.borderRadius = "0";
+
+    s.style.pointerEvents = "none";
+    s.style.zIndex = "9999";
+s.textContent = "✨";
+s.style.fontSize = rand(10,16) + "px";
+s.style.background = "none";
+s.style.boxShadow = "none";
+
+    s.style.opacity = "1";
+
+    document.body.appendChild(s);
+
+    gsap.to(s,{
+      x: rand(-30,30),
+      y: rand(-30,30),
+      scale: 0,
+      opacity: 0,
+      duration: rand(.6,1.2),
+      ease: "power2.out",
+      onComplete: ()=> s.remove()
+    });
+  }
+
+  let last = 0;
+
+  document.addEventListener("mousemove",(e)=>{
+    const now = Date.now();
+    if(now - last < 20) return;  // controls density (lower = more sparkles)
+    last = now;
+
+    sparkle(e.clientX, e.clientY);
+  });
+})();
+
 </script>
 
 </body>
